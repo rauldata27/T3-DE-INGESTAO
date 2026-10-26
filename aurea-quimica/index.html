@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Áurea Ensino | Desafio de Química</title>
+<style>
+:root{--navy:#2f455f;--navy2:#213247;--gold:#e1b764;--cream:#fbf5e8;--bg:#eef2f6;--ok:#16794a;--bad:#b93b34}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:linear-gradient(135deg,#eef2f6,#faf5e9);color:#17202b}
+.wrap{max-width:880px;margin:auto;padding:16px}.hero{background:linear-gradient(135deg,var(--navy2),var(--navy));color:#fff;border-radius:24px;padding:22px;box-shadow:0 18px 50px #22364b30}
+.brand{font-size:.8rem;letter-spacing:.22em;color:#f2d89f;font-weight:900}.hero h1{margin:6px 0 4px;font-size:clamp(1.6rem,4vw,2.4rem)}.hero p{margin:0;color:#e7edf4}
+.card{background:#fff;border:1px solid #dfe4ea;border-radius:22px;padding:20px;margin-top:16px;box-shadow:0 12px 35px #26384d14}.hidden{display:none}
+.tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.tag{background:#edf2f7;color:#26384d;padding:6px 10px;border-radius:999px;font-size:.82rem;font-weight:800}.tag.gold{background:#f9e7b9}
+.rules{display:grid;grid-template-columns:1fr 1fr;gap:12px}.rule{background:#faf7ef;border:1px solid #eadfc8;border-radius:15px;padding:14px}.rule h3{margin:0 0 7px;color:var(--navy2)}
+.btn{border:0;border-radius:14px;padding:13px 17px;font-weight:850;cursor:pointer;font-size:1rem}.primary{background:var(--navy);color:#fff}.gold{background:var(--gold);color:#24344a}.ghost{background:#edf2f6;color:#24344a}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.progress{height:10px;background:#e8ecf0;border-radius:999px;overflow:hidden;margin:12px 0 16px}.bar{height:100%;width:0;background:linear-gradient(90deg,var(--gold),#f2d794);transition:.25s}
+.qbox{background:#f4f7f9;border:1px solid #e0e5e9;border-radius:18px;padding:16px}.qtitle{font-weight:900;color:var(--navy2);font-size:1.08rem;margin-bottom:8px}.stem{line-height:1.55}
+.opts{display:grid;gap:10px;margin-top:14px}.opt{width:100%;text-align:left;padding:13px 14px;border:1.5px solid #d7dde4;border-radius:14px;background:#fff;cursor:pointer;font-size:1rem}.opt:hover{border-color:var(--gold);background:#fffaf0}.opt:disabled{cursor:default;opacity:.75}.opt.good{border-color:#3e9b67;background:#eef9f2}.opt.bad{border-color:#d16058;background:#fff0ef}
+.feedback{margin-top:13px;border-radius:15px;padding:14px;line-height:1.5}.feedback.good{background:#eef9f2;border:1px solid #bde1ca}.feedback.bad{background:#fff1f0;border:1px solid #edc1bd}.feedback h3{margin:0 0 7px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}.stat{background:#f3f6f8;border-radius:16px;padding:14px;text-align:center}.stat b{display:block;font-size:1.45rem;color:var(--navy)}
+.levels{margin-top:10px}.lvl{display:flex;justify-content:space-between;padding:9px 2px;border-bottom:1px dashed #d7dde4}.footer{text-align:center;color:#697386;font-size:.8rem;margin:18px 0 6px}
+@media(max-width:650px){.wrap{padding:10px}.rules,.stats{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="hero">
+<div class="brand">ÁUREA ENSINO</div>
+<h1>Desafio de Química</h1>
+<p>30 questões interativas de balanceamento e distribuição eletrônica</p>
+<div class="tags"><span class="tag gold">6 níveis</span><span class="tag">3 balanceamento + 2 distribuição por nível</span></div>
+</header>
+
+<section id="intro" class="card">
+<h2>Como funciona</h2>
+<p>Responda uma questão por vez. Se errar, você recebe a explicação completa e pode tentar novamente antes de avançar.</p>
+<div class="rules">
+<div class="rule"><h3>⚗️ Balanceamento</h3><div>Use apenas o <strong>método das tentativas</strong>. Nunca altere índices. Quantidade de átomos = coeficiente × índice.</div></div>
+<div class="rule"><h3>⚛️ Distribuição eletrônica</h3><div>Capacidades: <strong>s², p⁶, d¹⁰, f¹⁴</strong>. Siga a ordem energética de preenchimento.</div></div>
+</div>
+<div class="actions"><button class="btn primary" onclick="start()">Começar o desafio</button></div>
+</section>
+
+<section id="quiz" class="card hidden">
+<div class="top"><div><b id="counter"></b><div id="meta"></div></div><div class="tags"><span class="tag gold" id="scoreTag">0 acertos</span><span class="tag" id="errTag">0 erros</span></div></div>
+<div class="progress"><div id="bar" class="bar"></div></div>
+<div id="question"></div>
+</section>
+
+<section id="result" class="card hidden">
+<h2>Resultado final 🧪</h2>
+<p id="msg"></p>
+<div class="stats">
+<div class="stat"><b id="sAll"></b>geral</div>
+<div class="stat"><b id="sBal"></b>balanceamento</div>
+<div class="stat"><b id="sEle"></b>distribuição</div>
+</div>
+<h3>Por nível</h3><div id="levels" class="levels"></div>
+<div class="actions"><button class="btn primary" onclick="restart(false)">Refazer tudo</button><button id="retry" class="btn gold" onclick="restart(true)">Refazer as que errei</button></div>
+</section>
+
+<div class="footer">Áurea Ensino • treinamento progressivo para fortalecer a base de Química</div>
+</div>
+<script>
+const Q=[
+[1,"B","Água no laboratório","H₂ + O₂ → H₂O","2, 1, 2","1, 1, 1","2, 1, 2","2, 2, 1","1, 2, 2","4, 1, 2","Há 2 O em O₂ e apenas 1 em H₂O. Testamos 2H₂O. Agora há 4 H nos produtos, então usamos 2H₂. Resultado: 2H₂ + O₂ → 2H₂O."],
+[1,"D","Oxigênio e respiração","O oxigênio tem Z = 8. Qual é sua configuração eletrônica fundamental?","1s² 2s² 2p⁴","1s² 2s² 2p⁴","1s² 2s² 2p⁶","1s² 2p⁶","1s² 2s⁴ 2p²","1s² 2s² 3p⁴","O átomo neutro possui 8 elétrons. Preenchemos 1s², 2s² e os 4 restantes em 2p: 1s² 2s² 2p⁴."],
+[1,"B","Queima do magnésio","Mg + O₂ → MgO","2, 1, 2","1, 1, 1","2, 1, 2","1, 2, 1","2, 2, 1","4, 1, 4","O₂ fornece 2 O. Testamos 2MgO e, em seguida, 2Mg. Resultado: 2Mg + O₂ → 2MgO."],
+[1,"D","Sódio no sal","O sódio tem Z = 11. Qual é sua distribuição por níveis?","2 - 8 - 1","2 - 8 - 1","2 - 7 - 2","2 - 8 - 2","2 - 6 - 3","8 - 2 - 1","O sódio neutro tem 11 elétrons. Ficam 2 na primeira camada, 8 na segunda e 1 na terceira: 2 - 8 - 1."],
+[1,"B","Produção de amônia","N₂ + H₂ → NH₃","1, 3, 2","1, 1, 1","1, 2, 2","1, 3, 2","2, 3, 1","2, 1, 2","N₂ tem 2 N, então testamos 2NH₃. Isso produz 6 H, exigindo 3H₂. Resultado: N₂ + 3H₂ → 2NH₃."],
+
+[2,"B","Óxido de alumínio","Al + O₂ → Al₂O₃","4, 3, 2","2, 3, 1","4, 3, 2","4, 2, 2","2, 1, 1","6, 3, 2","O aparece em grupos de 2 e 3. Testamos 3O₂ e 2Al₂O₃, obtendo 6 O de cada lado. Isso exige 4Al. Resultado: 4Al + 3O₂ → 2Al₂O₃."],
+[2,"D","Cloro e valência","O cloro tem Z = 17. Quantos elétrons há na camada de valência?","7","1","5","6","7","8","A distribuição por níveis é 2 - 8 - 7. A camada mais externa possui 7 elétrons."],
+[2,"B","Decomposição do clorato","KClO₃ → KCl + O₂","2, 2, 3","1, 1, 1","2, 2, 3","2, 1, 3","3, 3, 2","4, 4, 3","Testamos 2KClO₃, totalizando 6 O, e 3O₂, também 6 O. Então ajustamos K e Cl com 2KCl."],
+[2,"D","Cálcio nos ossos","O cálcio tem Z = 20. Qual configuração é correta?","1s² 2s² 2p⁶ 3s² 3p⁶ 4s²","1s² 2s² 2p⁶ 3s² 3p⁶ 4s²","1s² 2s² 2p⁶ 3s² 3p⁶ 3d²","1s² 2s² 2p⁶ 3s² 3p⁸","1s² 2s² 2p⁶ 3s² 4p⁶ 4s²","1s² 2s² 2p⁶ 3s² 3p⁶","São 20 elétrons: 1s² 2s² 2p⁶ 3s² 3p⁶ 4s²."],
+[2,"B","Sódio e água","Na + H₂O → NaOH + H₂","2, 2, 2, 1","1, 1, 1, 1","2, 2, 2, 1","2, 1, 2, 1","1, 2, 1, 1","4, 2, 4, 1","Testamos 2NaOH. Isso pede 2Na e 2H₂O. Resultado: 2Na + 2H₂O → 2NaOH + H₂."],
+
+[3,"B","Obtenção de ferro","Fe₂O₃ + CO → Fe + CO₂","1, 3, 2, 3","1, 1, 2, 1","1, 3, 2, 3","2, 3, 4, 3","1, 2, 2, 2","2, 6, 2, 6","Ajustamos Fe com 2Fe. Testando 3CO e 3CO₂, o total de oxigênios também se iguala. Resultado: Fe₂O₃ + 3CO → 2Fe + 3CO₂."],
+[3,"D","Escândio","O escândio tem Z = 21. Qual configuração condensada é correta?","[Ar] 4s² 3d¹","[Ar] 3d³","[Ar] 4s² 3d¹","[Ar] 4s¹ 3d²","[Ne] 3s² 3p⁶ 3d³","[Ar] 4p³","[Ar] representa 18 elétrons. Restam 3: primeiro 4s² e depois 3d¹."],
+[3,"B","Combustão do propano","C₃H₈ + O₂ → CO₂ + H₂O","1, 5, 3, 4","1, 3, 3, 4","1, 5, 3, 4","2, 5, 6, 8","1, 4, 3, 4","2, 10, 3, 8","Testamos 3CO₂ para os 3 C e 4H₂O para os 8 H. Isso gera 10 O nos produtos, exigindo 5O₂."],
+[3,"D","Enxofre","O enxofre tem Z = 16. Quantos elétrons de valência possui?","6","2","4","5","6","8","A configuração termina em 3s² 3p⁴. Na camada n=3 há 2+4 = 6 elétrons."],
+[3,"B","Neutralização","HCl + Ca(OH)₂ → CaCl₂ + H₂O","2, 1, 1, 2","1, 1, 1, 1","2, 1, 1, 2","2, 2, 1, 2","1, 2, 2, 1","4, 1, 2, 2","Ca já está equilibrado. CaCl₂ pede 2Cl, então usamos 2HCl; os 4 H totais exigem 2H₂O."],
+
+[4,"B","Alumínio e ácido","Al + HCl → AlCl₃ + H₂","2, 6, 2, 3","1, 3, 1, 1","2, 6, 2, 3","2, 3, 2, 3","1, 6, 1, 3","4, 6, 2, 3","Testamos 2AlCl₃, o que exige 2Al e 6Cl. Logo usamos 6HCl e, com 6 H, 3H₂."],
+[4,"D","Ferro","O ferro tem Z = 26. Qual configuração condensada é correta?","[Ar] 4s² 3d⁶","[Ar] 4s² 3d⁶","[Ar] 4s² 3d⁴","[Ar] 4s⁶ 3d²","[Ar] 3d⁸","[Ne] 4s² 3d⁶","Após [Ar] restam 8 elétrons: 2 entram em 4s e 6 em 3d."],
+[4,"B","Fosfato de magnésio","Na₃PO₄ + MgCl₂ → Mg₃(PO₄)₂ + NaCl","2, 3, 1, 6","1, 1, 1, 1","2, 3, 1, 6","3, 2, 1, 6","2, 1, 1, 3","3, 3, 2, 6","No produto há 2 grupos PO₄ e 3 Mg. Testamos 2Na₃PO₄ e 3MgCl₂; isso produz 6Na e 6Cl, pedindo 6NaCl."],
+[4,"D","Íon cálcio","Ca neutro tem Z = 20. Qual distribuição por níveis do Ca²⁺?","2 - 8 - 8","2 - 8 - 8","2 - 8 - 8 - 2","2 - 8 - 6 - 2","2 - 8 - 10","2 - 6 - 8 - 2","Ca neutro é 2-8-8-2. O Ca²⁺ perde os 2 elétrons da camada externa e fica 2-8-8."],
+[4,"B","Oxidação da pirita","FeS₂ + O₂ → Fe₂O₃ + SO₂","4, 11, 2, 8","2, 5, 1, 4","4, 11, 2, 8","4, 9, 2, 8","2, 11, 1, 4","8, 11, 4, 8","Testamos 2FeS₂ → Fe₂O₃ + 4SO₂. Isso dá 11 O nos produtos, ou 11/2 O₂. Dobramos tudo: 4FeS₂ + 11O₂ → 2Fe₂O₃ + 8SO₂."],
+
+[5,"B","Combustão do butano","C₄H₁₀ + O₂ → CO₂ + H₂O","2, 13, 8, 10","1, 6, 4, 5","2, 13, 8, 10","2, 10, 8, 10","1, 13, 4, 5","4, 13, 8, 10","Com 1 C₄H₁₀ testamos 4CO₂ e 5H₂O, totalizando 13 O, ou 13/2 O₂. Dobramos tudo: 2C₄H₁₀ + 13O₂ → 8CO₂ + 10H₂O."],
+[5,"D","Bromo","A configuração do Br termina em 4s² 3d¹⁰ 4p⁵. Quantos elétrons há na camada de valência?","7","2","5","7","10","17","A camada mais externa é n=4. Nela há 4s² + 4p⁵ = 7 elétrons."],
+[5,"B","Ácido fosfórico","Ca(OH)₂ + H₃PO₄ → Ca₃(PO₄)₂ + H₂O. Qual é a soma dos menores coeficientes?","12","8","10","11","12","14","Testamos 3Ca(OH)₂ e 2H₃PO₄ para formar Ca₃(PO₄)₂. Sobram 12 H, então usamos 6H₂O. Soma: 3+2+1+6 = 12."],
+[5,"D","Íon fosfeto","O fósforo tem Z = 15. Qual distribuição por níveis do P³⁻?","2 - 8 - 8","2 - 8 - 5","2 - 8 - 8","2 - 8 - 6","2 - 6 - 7","2 - 8 - 8 - 3","P neutro tem 15 elétrons: 2-8-5. P³⁻ ganhou 3, ficando com 18: 2-8-8."],
+[5,"B","Oxidação da amônia","NH₃ + O₂ → NO + H₂O","4, 5, 4, 6","2, 3, 2, 3","4, 5, 4, 6","4, 3, 4, 6","2, 5, 2, 3","4, 6, 4, 5","Testamos 4NH₃, então 4NO para conservar N. Os 12 H exigem 6H₂O. Isso totaliza 10 O nos produtos, pedindo 5O₂."],
+
+[7,"B","Combustão do etanol","C₂H₅OH + O₂ → CO₂ + H₂O","1, 3, 2, 3","1, 2, 2, 3","1, 3, 2, 3","2, 3, 4, 6","1, 4, 2, 3","2, 6, 2, 6","2 C pedem 2CO₂ e 6 H pedem 3H₂O. Nos produtos há 7 O; 1 já vem do etanol, restam 6, ou 3O₂."],
+[7,"D","Identificando o elemento","Um átomo neutro termina em 3s² 3p⁵. Qual é o elemento?","Cl, Z = 17","S, Z = 16","Cl, Z = 17","Ar, Z = 18","P, Z = 15","K, Z = 19","A configuração completa soma 17 elétrons. O elemento de Z=17 é o cloro."],
+[7,"B","Carbonato e ácido","Na₂CO₃ + H₃PO₄ → Na₃PO₄ + CO₂ + H₂O","3, 2, 2, 3, 3","1, 1, 1, 1, 1","3, 2, 2, 3, 3","2, 3, 2, 2, 3","3, 1, 2, 3, 2","6, 2, 2, 6, 3","Para compatibilizar Na₂ e Na₃, testamos 3Na₂CO₃ e 2Na₃PO₄. Isso exige 2H₃PO₄, 3CO₂ e 3H₂O."],
+[7,"D","Íon ferro(III)","Fe neutro: [Ar] 4s² 3d⁶. Qual configuração do Fe³⁺?","[Ar] 3d⁵","[Ar] 4s² 3d³","[Ar] 3d⁵","[Ar] 4s¹ 3d⁴","[Ar] 3d³","[Ar] 4s² 3d⁵","Ao formar Fe³⁺, removemos primeiro os 2 elétrons de 4s e depois 1 de 3d. Resultado: [Ar] 3d⁵."],
+[7,"B","Cobre e ácido nítrico","Cu + HNO₃ → Cu(NO₃)₂ + NO + H₂O","3, 8, 3, 2, 4","1, 4, 1, 1, 2","3, 8, 3, 2, 4","2, 6, 2, 2, 3","3, 6, 3, 1, 3","4, 8, 4, 2, 4","Por tentativas: 3Cu pedem 3Cu(NO₃)₂. Com 2NO há 8 N nos produtos, então usamos 8HNO₃. Os 8 H exigem 4H₂O. Oxigênios: 24 em ambos os lados."]
+];
+let qs=Q.slice(),i=0,score=0,errs=0,tries={},wrong=new Set(),first=new Set();
+
+function start(){document.getElementById("intro").classList.add("hidden");document.getElementById("quiz").classList.remove("hidden");render()}
+function render(){
+const q=qs[i], letters=["A","B","C","D","E"];document.getElementById("counter").textContent="Questão "+(i+1)+" de "+qs.length;
+document.getElementById("meta").textContent="Nível "+q[0]+" • "+(q[1]==="B"?"Balanceamento":"Distribuição eletrônica");
+document.getElementById("bar").style.width=(i/qs.length*100)+"%";
+let html='<div class="qbox"><div class="qtitle">'+q[2]+'</div><div class="stem">'+q[3]+'</div><div class="opts">';
+for(let k=0;k<5;k++) html+='<button class="opt" onclick="answer('+k+',this)"><b>'+letters[k]+')</b> '+q[6+k]+'</button>';
+html+='</div><div id="fb"></div></div>';document.getElementById("question").innerHTML=html}
+function answer(k,b){
+const q=qs[i];tries[i]=(tries[i]||0)+1;const correctIndex=["A","B","C","D","E"].indexOf(q[1]);
+if(k===correctIndex){b.classList.add("good");document.querySelectorAll(".opt").forEach(x=>x.disabled=true);if(tries[i]===1){score++;first.add(q)}document.getElementById("fb").innerHTML='<div class="feedback good"><h3>✅ Correto!</h3><div>'+q[11]+'</div><div class="actions"><button class="btn primary" onclick="next()">Próxima questão</button></div></div>'}
+else{errs++;wrong.add(q);b.classList.add("bad");b.disabled=true;document.getElementById("fb").innerHTML='<div class="feedback bad"><h3>❌ Ainda não.</h3><p><b>Por que está errada?</b> Essa opção não satisfaz todas as condições da questão.</p><div>'+q[11]+'</div><p><b>Tente novamente.</b> A alternativa correta continua disponível.</p></div>'}
+document.getElementById("scoreTag").textContent=score+" acertos";document.getElementById("errTag").textContent=errs+" erros"}
+function next(){i++;if(i>=qs.length){finish();return}render();scrollTo({top:0,behavior:"smooth"})}
+function finish(){
+document.getElementById("quiz").classList.add("hidden");document.getElementById("result").classList.remove("hidden");
+const bal=[...first].filter(q=>q[1]==="B").length, ele=[...first].filter(q=>q[1]==="D").length, p=Math.round(score/qs.length*100);
+document.getElementById("sAll").textContent=score+"/"+qs.length;document.getElementById("sBal").textContent=bal+"/"+qs.filter(q=>q[1]==="B").length;document.getElementById("sEle").textContent=ele+"/"+qs.filter(q=>q[1]==="D").length;
+document.getElementById("msg").textContent="Você acertou "+p+"% na primeira tentativa. "+(p>=90?"Excelente domínio.":p>=70?"Boa base. Revise as que exigiram segunda tentativa.":p>=50?"A base está avançando. Refaça os erros.":"Vale reforçar os níveis iniciais e tentar novamente.");
+const lv=[...new Set(qs.map(q=>q[0]))];document.getElementById("levels").innerHTML=lv.map(l=>'<div class="lvl"><span>Nível '+l+'</span><b>'+qs.filter(q=>q[0]===l&&first.has(q)).length+'/'+qs.filter(q=>q[0]===l).length+'</b></div>').join("");
+document.getElementById("retry").style.display=wrong.size?"inline-block":"none";scrollTo({top:0,behavior:"smooth"})}
+function restart(only){qs=only?[...wrong]:Q.slice();i=0;score=0;errs=0;tries={};wrong=new Set();first=new Set();document.getElementById("result").classList.add("hidden");document.getElementById("quiz").classList.remove("hidden");document.getElementById("scoreTag").textContent="0 acertos";document.getElementById("errTag").textContent="0 erros";render()}
+</script>
+</body>
+</html>
